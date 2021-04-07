@@ -13,23 +13,25 @@ namespace ariel
     {
         if (file)
         {
-            v.push_back(NodeU("", "", 0));
+            // v.push_back(NodeU("", "", 0));
         }
     }
 
     NumberWithUnits::NumberWithUnits(double a, std::string n)
     {
 
-        for (unsigned int i = 0; i < v.size(); i++)
-        {
-            if (v.at(i).nameFather == n)
-            {
-                amount = a;
-                name = n;
-                break;
-            }
-            //throw invalid_argument("invalid input");
-        }
+        // for (unsigned int i = 0; i < v.size(); i++)
+        // {
+        //     if (v.at(i).nameFather == n)
+        //     {
+        //         amount = a;
+        //         name = n;
+        //         break;
+        //     }
+        //throw invalid_argument("invalid input");
+        // }
+        amount = a;
+        name = n;
     }
 
     //Compare operation
