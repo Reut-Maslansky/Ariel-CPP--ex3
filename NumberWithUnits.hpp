@@ -13,16 +13,18 @@ namespace ariel
             std::string nameChild;
             int compare;
 
-            NoedU(std::string father, std::string child, int com)
+            NoedU(std::string father, std::string child, double com)
                 : nameFather(father), nameChild(child), compare(com)
             {
             }
         };
 
         std::vector<NoedU> v;
+        double amount;
+        std::string name;
 
     public:
-        NumberWithUnits(int, std::string);
+        NumberWithUnits(double, std::string);
         void read_units(std:: ifstream);
 
         //Compare operation
