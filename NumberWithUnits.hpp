@@ -1,6 +1,4 @@
 #pragma once
-#include <fstream>
-#include <string>
 #include <vector>
 
 namespace ariel
@@ -23,7 +21,7 @@ namespace ariel
 
     public:
         NumberWithUnits(int, std::string);
-        void read_units(ifstream);
+        void read_units(std:: ifstream);
 
         //Compare operation
         bool operator==(const NumberWithUnits &u) const;
