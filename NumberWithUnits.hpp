@@ -7,25 +7,25 @@ namespace ariel
 {
     class NumberWithUnits
     {
-        struct NoedU
+        struct NodeU
         {
             std::string nameFather;
             std::string nameChild;
             int compare;
 
-            NoedU(std::string father, std::string child, double com)
+            NodeU(std::string father, std::string child, double com)
                 : nameFather(father), nameChild(child), compare(com)
             {
             }
         };
 
-        std::vector<NoedU> v;
+        static std::vector<NodeU> v;
         double amount;
         std::string name;
 
     public:
         NumberWithUnits(double, std::string);
-        void read_units(std:: ifstream);
+        static void read_units(std:: ifstream&);
 
         //Compare operation
         bool operator==(const NumberWithUnits &u) const;
@@ -48,7 +48,8 @@ namespace ariel
         friend NumberWithUnits operator-(const NumberWithUnits &u1, const NumberWithUnits &u2);
 
         //Mul operation
-        friend NumberWithUnits operator*(const double d, const NumberWithUnits &u2);
+        friend NumberWithUnits operator*(const double d, const NumberWithUnits &u1);
+        friend NumberWithUnits operator*(const NumberWithUnits &u1, const double d);
 
         //Unary operation
         friend NumberWithUnits operator+(const NumberWithUnits &u1);
