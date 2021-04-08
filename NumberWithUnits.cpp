@@ -126,7 +126,7 @@ namespace ariel
     //Input/Output operation
     std::ostream &operator<<(std::ostream &os, const NumberWithUnits &u)
     {
-        return os << u.amount << "[" << u.name << "]";
+        return os << to_string(u.amount) << "[" << u.name << "]";
     }
     std::istream &operator>>(std::istream &is, NumberWithUnits &u)
     {
