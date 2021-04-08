@@ -2,6 +2,7 @@
 #include "NumberWithUnits.hpp"
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 using namespace ariel;
 using namespace std;
@@ -143,21 +144,21 @@ TEST_CASE("Plus/Minus operation same types")
     CHECK_EQ(unit_min1 - unit_hour2, NumberWithUnits{0, "min"});
     CHECK_EQ(unit_min2 - unit_hour2, NumberWithUnits{-28.82, "min"});
 
-    NumberWithUnits temp1{12, "min"};
-    temp1 -= unit_min1;
-    CHECK_EQ(temp1, NumberWithUnits{-18, "min"});
-    NumberWithUnits temp2{108, "kg"};
-    temp2 -= unit_kg1;
-    CHECK_EQ(temp2, NumberWithUnits{3, "kg"});
-    NumberWithUnits temp3{35, "m"};
-    temp3 -= unit_m1;
-    CHECK_EQ(temp3, NumberWithUnits{29, "m"});
-    NumberWithUnits temp4{7, "hour"};
-    temp4 -= unit_min1;
+    NumberWithUnits temp11{12, "min"};
+    temp11 -= unit_min1;
+    CHECK_EQ(temp11, NumberWithUnits{-18, "min"});
+    NumberWithUnits temp22{108, "kg"};
+    temp22 -= unit_kg1;
+    CHECK_EQ(temp22, NumberWithUnits{3, "kg"});
+    NumberWithUnits temp33{35, "m"};
+    temp33 -= unit_m1;
+    CHECK_EQ(temp33, NumberWithUnits{29, "m"});
+    NumberWithUnits temp44{7, "hour"};
+    temp44 -= unit_min1;
     CHECK_EQ(temp4, NumberWithUnits{-23, "hour"});
-    NumberWithUnits temp5{45, "min"};
-    temp5 -= unit_hour1;
-    CHECK_EQ(temp5, NumberWithUnits{-3.25, "min"});
+    NumberWithUnits temp55{45, "min"};
+    temp55 -= unit_hour1;
+    CHECK_EQ(temp55, NumberWithUnits{-3.25, "min"});
 }
 
 TEST_CASE("Plus/Minus operation diff types")
@@ -179,4 +180,106 @@ TEST_CASE("Plus/Minus operation diff types")
     CHECK_THROWS(unit_kg1 -= unit_min2);
     CHECK_THROWS(unit_ILS1 -= unit_cm1);
     CHECK_THROWS(unit_m1 -= unit_USD2);
+}
+
+TEST_CASE("++ operation")
+{
+
+    //prefix
+    CHECK_EQ(++unit_ton1, NumberWithUnits{2, "ton"});
+
+    //postfix
+    unit_ton1++;
+    CHECK_EQ(unit_ton1, NumberWithUnits{3, "ton"});
+    CHECK_EQ(unit_ton1++, NumberWithUnits{3, "ton"});
+    CHECK_EQ(unit_ton1, NumberWithUnits{4, "ton"});
+}
+
+TEST_CASE("-- operation")
+{
+
+    //prefix
+    CHECK_EQ(--unit_ton1, NumberWithUnits{3, "ton"});
+
+    //postfix
+    unit_ton1--;
+    CHECK_EQ(unit_ton1, NumberWithUnits{2, "ton"});
+    CHECK_EQ(unit_ton1--, NumberWithUnits{2, "ton"});
+    CHECK_EQ(unit_ton1, NumberWithUnits{1, "ton"});
+}
+
+TEST_CASE("unary operation")
+{
+    CHECK_EQ(-unit_USD1, NumberWithUnits{-20, "USD"});
+    CHECK_EQ(-unit_USD1, NumberWithUnits{20, "USD"});
+    CHECK_EQ(-unit_g1, NumberWithUnits{-1, "USD"});
+    CHECK_EQ(-unit_g1, NumberWithUnits{1, "USD"});
+
+    CHECK_EQ(+unit_sec2, NumberWithUnits{80, "sec"});
+    CHECK_EQ(+unit_kg2, NumberWithUnits{23.5, "kg"});
+}
+
+TEST_CASE("* operation")
+{
+    CHECK_EQ(3 * NumberWithUnits{-21, "ton"}, NumberWithUnits{-63, "ton"});
+    CHECK_EQ(12.3 * NumberWithUnits{10, "cm"}, NumberWithUnits{123, "cm"});
+    CHECK_EQ(2 * NumberWithUnits{-30, "sec"}, NumberWithUnits{-60, "sec"});
+
+    CHECK_EQ(NumberWithUnits{20, "ILS"} * 7, NumberWithUnits{140, "ILS"});
+    CHECK_EQ(NumberWithUnits{-17, "m"} * 2, NumberWithUnits{-34, "m"});
+    CHECK_EQ(NumberWithUnits{-45, "min"} * 1, NumberWithUnits{-45, "min"});
+
+    CHECK_EQ(5 * NumberWithUnits{-45, "kg"} * 2, NumberWithUnits{-450, "kg"});
+    CHECK_EQ(3 * NumberWithUnits{2, "USD"} * 4, NumberWithUnits{24, "USD"});
+    CHECK_EQ(-24 * NumberWithUnits{-1, "g"} * -2, NumberWithUnits{-48, "g"});
+}
+
+TEST_CASE("<< operation")
+{
+    ostringstream out;
+    NumberWithUnits u1{7.789789, "km"};
+    out << u1;
+    CHECK_EQ(out.str(), "7.789789[km]");
+
+    NumberWithUnits u2{-1, "USD"};
+    ostringstream out1;
+    out1 << u2;
+    CHECK_EQ(out1.str(), "-1[USD]");
+
+    NumberWithUnits u3{5, "g"};
+    ostringstream out2;
+    out2 << u3;
+    CHECK_EQ(out2.str(), "5[g]");
+}
+
+TEST_CASE(">> operation")
+{
+    NumberWithUnits simple{6, "sec"};
+    istringstream in("7 [ton] ");
+    istringstream in1("8[g] ");
+    istringstream in2("23[cm]");
+    istringstream in3("-1[ kg]");
+    istringstream in4("-9[m ]");
+
+    in >> simple;
+    CHECK_EQ(simple, NumberWithUnits{7, "ton"});
+    in1 >> simple;
+    CHECK_EQ(simple, NumberWithUnits{8, "g"});
+    in2 >> simple;
+    CHECK_EQ(simple, NumberWithUnits{23, "cm"});
+    in3 >> simple;
+    CHECK_EQ(simple, NumberWithUnits{-1, "kg"});
+    in4 >> simple;
+    CHECK_EQ(simple, NumberWithUnits{-9, "m"});
+}
+
+TEST_CASE("Upper and Lower letters, and illigal types")
+{
+
+    CHECK_THROWS(NumberWithUnits(1, "Cm"));
+    CHECK_THROWS(NumberWithUnits(2, "CM"));
+    CHECK_THROWS(NumberWithUnits(3, "cM"));
+    CHECK_THROWS(NumberWithUnits(4, "second"));
+    CHECK_THROWS(NumberWithUnits(5, "kilogram"));
+    CHECK_THROWS(NumberWithUnits(6, "Minutes"));
 }
