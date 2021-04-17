@@ -27,6 +27,36 @@ TEST_CASE("read_units")
     CHECK_NOTHROW(NumberWithUnits::read_units(units_file));
 }
 
+TEST_CASE("build constructors")
+{
+
+    CHECK_NOTHROW(NumberWithUnits unit_km(3, "km"));
+    CHECK_NOTHROW(NumberWithUnits unit_m(-6, "m"));
+    CHECK_NOTHROW(NumberWithUnits unit_cm(5, "cm"));
+    CHECK_NOTHROW(NumberWithUnits unit_g(1, "g"));
+    CHECK_NOTHROW(NumberWithUnits unit_kg(23.7, "kg"));
+    CHECK_NOTHROW(NumberWithUnits unit_ton(1, "ton"));
+    CHECK_NOTHROW(NumberWithUnits unit_hour(4.7, "hour"));
+    CHECK_NOTHROW(NumberWithUnits unit_min(30, "min"));
+    CHECK_NOTHROW(NumberWithUnits unit_sec(-45, "sec"));
+    CHECK_NOTHROW(NumberWithUnits unit_USD(-20, "USD"));
+    CHECK_NOTHROW(NumberWithUnits unit_ILS(34, "ILS"));
+}
+
+TEST_CASE("Upper and Lower letters, and illigal types")
+{
+
+    CHECK_THROWS(NumberWithUnits(1, "Cm"));
+    CHECK_THROWS(NumberWithUnits(2, "CM"));
+    CHECK_THROWS(NumberWithUnits(3, "cM"));
+    CHECK_THROWS(NumberWithUnits(4, "second"));
+    CHECK_THROWS(NumberWithUnits(5, "kilogram"));
+    CHECK_THROWS(NumberWithUnits(6, "Minutes"));
+    CHECK_THROWS(NumberWithUnits(7, "aba"));
+    CHECK_THROWS(NumberWithUnits(8, "day"));
+    CHECK_THROWS(NumberWithUnits(9, "week"));
+}
+
 NumberWithUnits unit_km1{3, "km"};
 NumberWithUnits unit_km2{8.4, "km"}; //8400 m
 NumberWithUnits unit_m1{6, "m"};
@@ -74,8 +104,8 @@ TEST_CASE("Compare operation same types")
     CHECK_LT(unit_ILS2, unit_USD2);
     CHECK_LT(unit_hour2, unit_min2);
 
-    CHECK_GT(2, 1);
-    CHECK_GT(2, 1);
+    CHECK_GT(unit_USD2, unit_ILS2);
+    CHECK_GT(unit_min2, unit_hour2);
 }
 
 TEST_CASE("Compare operation diff types")
@@ -95,20 +125,20 @@ TEST_CASE("Compare operation diff types")
     CHECK_THROWS(unit_cm1.operator<=(unit_sec1));
     CHECK_THROWS(unit_sec1.operator<=(unit_cm1));
 
-    //  CHECK_THROWS(.operator>=());
-    //  CHECK_THROWS(.operator>=());
-    //  CHECK_THROWS(.operator>=());
-    //  CHECK_THROWS(.operator>=());
+    CHECK_THROWS(unit_kg1.operator>=(unit_min1));
+    CHECK_THROWS(unit_min1.operator>=(unit_kg1));
+    CHECK_THROWS(unit_sec1.operator>=(unit_cm1));
+    CHECK_THROWS(unit_cm1.operator>=(unit_sec1));
 
-    //  CHECK_THROWS(.operator<());
-    //  CHECK_THROWS(.operator<());
-    //  CHECK_THROWS(.operator<());
-    //  CHECK_THROWS(.operator<());
+    CHECK_THROWS(unit_kg1.operator<(unit_sec1));
+    CHECK_THROWS(unit_sec1.operator<(unit_m1));
+    CHECK_THROWS(unit_g2.operator<(unit_USD1));
+    CHECK_THROWS(unit_cm2.operator<(unit_g2));
 
-    //  CHECK_THROWS(.operator>());
-    //  CHECK_THROWS(.operator>());
-    //  CHECK_THROWS(.operator>());
-    //  CHECK_THROWS(.operator>());
+    CHECK_THROWS(unit_kg1.operator>(unit_sec1));
+    CHECK_THROWS(unit_m1.operator>(unit_sec1));
+    CHECK_THROWS(unit_USD1.operator>(unit_g2));
+    CHECK_THROWS(unit_cm2.operator>(unit_USD1));
 }
 
 TEST_CASE("Plus/Minus operation same types")
@@ -273,13 +303,53 @@ TEST_CASE(">> operation")
     CHECK_EQ(simple, NumberWithUnits{-9, "m"});
 }
 
-TEST_CASE("Upper and Lower letters, and illigal types")
+TEST_CASE("second read_units")
 {
+    // Open file
+    ofstream SecFile("SecFile.txt");
 
-    CHECK_THROWS(NumberWithUnits(1, "Cm"));
-    CHECK_THROWS(NumberWithUnits(2, "CM"));
-    CHECK_THROWS(NumberWithUnits(3, "cM"));
-    CHECK_THROWS(NumberWithUnits(4, "second"));
-    CHECK_THROWS(NumberWithUnits(5, "kilogram"));
-    CHECK_THROWS(NumberWithUnits(6, "Minutes"));
+    SecFile << "1 day = 24 hour" << endl;
+    SecFile << "1 week = 7 day" << endl;
+
+    // Close the file
+    SecFile.close();
+
+    ifstream units_file_Sec{"SecFile.txt"};
+    CHECK_NOTHROW(NumberWithUnits::read_units(units_file_Sec));
+}
+
+TEST_CASE("constructors after another file")
+{
+    CHECK_NOTHROW(NumberWithUnits day1(7, "day")); //1 week, 168 hour
+    CHECK_NOTHROW(NumberWithUnits day2(1, "day"));
+    CHECK_NOTHROW(NumberWithUnits week1(1, "week"));   //7 day
+    CHECK_NOTHROW(NumberWithUnits week2(0.5, "week")); //3.5 day
+
+    //from the first file
+    CHECK_NOTHROW(NumberWithUnits hour(48, "hour")); //2 day
+}
+
+NumberWithUnits day1(7, "day"); //1 week, 168 hour
+NumberWithUnits day2(1, "day");
+NumberWithUnits week1(1, "week");   //7 day
+NumberWithUnits week2(0.5, "week"); //3.5 day
+
+//from the first file
+NumberWithUnits hour(48, "hour"); //2 day
+
+TEST_CASE("operation after another file")
+{
+    CHECK(day1 == week1);
+    CHECK(hour == NumberWithUnits (2, "day"));
+
+    CHECK_NE(day2, week2);
+
+    CHECK_LE(week2, day1);
+
+    CHECK_GE(day1, week2);
+
+    CHECK_LT(week2, day1);
+
+    CHECK_GT(day1, week2);
+    CHECK_GT(week2, hour);
 }

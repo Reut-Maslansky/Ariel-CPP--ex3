@@ -36,8 +36,8 @@ namespace ariel
         bool operator<(const NumberWithUnits &u) const;
         bool operator<=(const NumberWithUnits &u) const;
 
-        bool operator+=(const NumberWithUnits &u);
-        bool operator-=(const NumberWithUnits &u);
+        NumberWithUnits& operator+=(const NumberWithUnits &u);
+        NumberWithUnits& operator-=(const NumberWithUnits &u);
 
         NumberWithUnits &operator++();         // prefix  ++a
         const NumberWithUnits operator++(int); // postfix a++
@@ -60,5 +60,4 @@ namespace ariel
         friend std::ostream &operator<<(std::ostream &os, const NumberWithUnits &u);
         friend std::istream &operator>>(std::istream &is, NumberWithUnits &u);
     };
-
 }

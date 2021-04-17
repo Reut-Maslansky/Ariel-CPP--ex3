@@ -60,14 +60,17 @@ namespace ariel
         return true;
     }
 
-    bool NumberWithUnits::operator+=(const NumberWithUnits &u)
+
+    // += / -= operation
+    NumberWithUnits& NumberWithUnits::operator+=(const NumberWithUnits &u)
     {
-        return true;
+        return *this;
     }
-    bool NumberWithUnits::operator-=(const NumberWithUnits &u)
+    NumberWithUnits& NumberWithUnits::operator-=(const NumberWithUnits &u)
     {
-        return true;
+        return *this;
     }
+
 
     // prefix  ++a
     NumberWithUnits &NumberWithUnits::operator++()
@@ -90,6 +93,7 @@ namespace ariel
         return NumberWithUnits(amount, name);
     }
 
+
     //Plus/Minus operation
     NumberWithUnits operator+(const NumberWithUnits &u1, const NumberWithUnits &u2)
     {
@@ -103,6 +107,7 @@ namespace ariel
         return NumberWithUnits(1, "");
     }
 
+
     //Mul operation
     NumberWithUnits operator*(const double d, const NumberWithUnits &u1)
     {
@@ -112,6 +117,7 @@ namespace ariel
     {
         return NumberWithUnits(1, "");
     }
+
 
     //Unary operation
     NumberWithUnits operator+(const NumberWithUnits &u1)
@@ -123,10 +129,11 @@ namespace ariel
         return NumberWithUnits(1, "");
     }
 
+
     //Input/Output operation
     std::ostream &operator<<(std::ostream &os, const NumberWithUnits &u)
     {
-        return os << to_string(u.amount) << "[" << u.name << "]";
+        return os << (u.amount) << "[" << u.name << "]";
     }
     std::istream &operator>>(std::istream &is, NumberWithUnits &u)
     {
