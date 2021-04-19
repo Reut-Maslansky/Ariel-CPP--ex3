@@ -84,14 +84,14 @@ TEST_CASE("Compare operation same types")
 {
     CHECK(unit_hour2 == unit_min1);
     CHECK(unit_min1 == unit_hour2);
-    CHECK(unit_ton2 == NumberWithUnits{236000, "kg"});
-    CHECK(NumberWithUnits{236000, "kg"} == unit_ton2);
+    CHECK(unit_ton2 == NumberWithUnits{23600, "kg"});
+    CHECK(NumberWithUnits{23600, "kg"} == unit_ton2);
 
     CHECK_NE(unit_ILS1, unit_USD1);
-    CHECK_NE(unit_kg1, unit_kg1);
+    CHECK_NE(unit_kg1, unit_kg2);
 
     CHECK_LE(unit_hour2, unit_min1);
-    CHECK_LE(unit_hour2, unit_min2);
+    CHECK_LE(unit_min2, unit_hour2);
     CHECK_LE(unit_ILS2, unit_USD2);
     CHECK_LE(unit_ton1, unit_ton1);
 
@@ -102,10 +102,10 @@ TEST_CASE("Compare operation same types")
     CHECK_GE(unit_sec2, unit_min2);
 
     CHECK_LT(unit_ILS2, unit_USD2);
-    CHECK_LT(unit_hour2, unit_min2);
+    CHECK_LT(unit_min2, unit_hour2);
 
     CHECK_GT(unit_USD2, unit_ILS2);
-    CHECK_GT(unit_min2, unit_hour2);
+    CHECK_GT(unit_hour2, unit_min2);
 }
 
 TEST_CASE("Compare operation diff types")
@@ -147,8 +147,8 @@ TEST_CASE("Plus/Minus operation same types")
     CHECK_EQ(unit_kg1 + unit_kg2, NumberWithUnits{128.5, "kg"});
     CHECK_EQ(unit_m1 + unit_m2, NumberWithUnits{96.4, "m"});
 
-    CHECK_EQ(unit_hour2 + unit_min2, NumberWithUnits{4.5, "hour"});
-    CHECK_EQ(unit_min2 + unit_hour2, NumberWithUnits{270, "min"});
+    CHECK_EQ(unit_hour2 + unit_min1, NumberWithUnits{1, "hour"});
+    CHECK_EQ(unit_min1 + unit_hour2, NumberWithUnits{60, "min"});
 
     NumberWithUnits temp1{12, "min"};
     temp1 += unit_min1;
@@ -164,7 +164,7 @@ TEST_CASE("Plus/Minus operation same types")
     CHECK_EQ(temp4, NumberWithUnits{7.5, "hour"});
     NumberWithUnits temp5{45, "min"};
     temp5 += unit_hour1;
-    CHECK_EQ(temp5, NumberWithUnits{4.75, "min"});
+    CHECK_EQ(temp5, NumberWithUnits{285, "min"});
 
     CHECK_EQ(unit_min1 - unit_min2, NumberWithUnits{28.82, "min"});
     CHECK_EQ(unit_kg1 - unit_kg2, NumberWithUnits{81.5, "kg"});
@@ -185,10 +185,10 @@ TEST_CASE("Plus/Minus operation same types")
     CHECK_EQ(temp33, NumberWithUnits{29, "m"});
     NumberWithUnits temp44{7, "hour"};
     temp44 -= unit_min1;
-    CHECK_EQ(temp4, NumberWithUnits{-23, "hour"});
+    CHECK_EQ(temp44, NumberWithUnits{6.5, "hour"});
     NumberWithUnits temp55{45, "min"};
     temp55 -= unit_hour1;
-    CHECK_EQ(temp55, NumberWithUnits{-3.25, "min"});
+    CHECK_EQ(temp55, NumberWithUnits{-195, "min"});
 }
 
 TEST_CASE("Plus/Minus operation diff types")
@@ -241,9 +241,12 @@ TEST_CASE("-- operation")
 TEST_CASE("unary operation")
 {
     CHECK_EQ(-unit_USD1, NumberWithUnits{-20, "USD"});
-    CHECK_EQ(-unit_USD1, NumberWithUnits{20, "USD"});
-    CHECK_EQ(-unit_g1, NumberWithUnits{-1, "USD"});
-    CHECK_EQ(-unit_g1, NumberWithUnits{1, "USD"});
+    CHECK_EQ(-unit_g1, NumberWithUnits{-1, "g"});
+
+    //note: Not really supposed to change
+
+    CHECK_EQ(-unit_USD1, NumberWithUnits{-20, "USD"});
+    CHECK_EQ(-unit_g1, NumberWithUnits{-1, "g"});
 
     CHECK_EQ(+unit_sec2, NumberWithUnits{80, "sec"});
     CHECK_EQ(+unit_kg2, NumberWithUnits{23.5, "kg"});
@@ -267,9 +270,9 @@ TEST_CASE("* operation")
 TEST_CASE("<< operation")
 {
     ostringstream out;
-    NumberWithUnits u1{7.789789, "km"};
+    NumberWithUnits u1{7.78978, "km"};
     out << u1;
-    CHECK_EQ(out.str(), "7.789789[km]");
+    CHECK_EQ(out.str(), "7.78978[km]");
 
     NumberWithUnits u2{-1, "USD"};
     ostringstream out1;
@@ -340,7 +343,7 @@ NumberWithUnits hour(48, "hour"); //2 day
 TEST_CASE("operation after another file")
 {
     CHECK(day1 == week1);
-    CHECK(hour == NumberWithUnits (2, "day"));
+    CHECK(hour == NumberWithUnits(2, "day"));
 
     CHECK_NE(day2, week2);
 
