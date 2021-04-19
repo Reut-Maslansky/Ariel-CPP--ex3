@@ -1,0 +1,2 @@
+1 day = 24 hour
+1 week = 7 day

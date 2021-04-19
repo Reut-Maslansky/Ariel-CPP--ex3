@@ -1,35 +1,57 @@
 #include "NumberWithUnits.hpp"
-#include <vector>
 #include <fstream>
 #include <string>
 #include <sstream>
 #include <stdexcept>
+#include <iostream>
 
 using namespace std;
 
 namespace ariel
 {
+    map<string, map<string, double>> NumberWithUnits::myUnits;
     void NumberWithUnits::read_units(ifstream &file)
     {
         if (file)
         {
-            // v.push_back(NodeU("", "", 0));
+            string u;
+            while (getline(file, u))
+            {
+                string parent, operatorE, child;
+                double one, number;
+                istringstream(u) >> skipws >> one >> parent >> operatorE >> number >> child;
+                if (!myUnits.count(parent))
+                {
+                    myUnits.insert({parent, map<string, double>{}});
+                }
+                if (!myUnits.count(child))
+                {
+                    myUnits.insert({child, map<string, double>{}});
+                }
+
+                for (auto elem : myUnits.at(parent))
+                {
+                    double tempAmount = elem.second * number;
+                    string tempName = elem.first;
+                    myUnits.at(tempName).insert({child, tempAmount});
+                    myUnits.at(child).insert({tempName, 1 / tempAmount});
+                }
+
+                for (auto elem : myUnits.at(child))
+                {
+                    double tempAmount = elem.second * number;
+                    string tempName = elem.first;
+                    myUnits.at(tempName).insert({parent, 1 / tempAmount});
+                    myUnits.at(parent).insert({tempName, tempAmount});
+                }
+
+                myUnits.at(parent).insert({child, number});
+                myUnits.at(child).insert({parent, (1 / number)});
+            }
         }
     }
-
     NumberWithUnits::NumberWithUnits(double a, std::string n)
     {
-
-        // for (unsigned int i = 0; i < v.size(); i++)
-        // {
-        //     if (v.at(i).nameFather == n)
-        //     {
-        //         amount = a;
-        //         name = n;
-        //         break;
-        //     }
-        //throw invalid_argument("invalid input");
-        // }
         amount = a;
         name = n;
     }
@@ -60,17 +82,15 @@ namespace ariel
         return true;
     }
 
-
     // += / -= operation
-    NumberWithUnits& NumberWithUnits::operator+=(const NumberWithUnits &u)
+    NumberWithUnits &NumberWithUnits::operator+=(const NumberWithUnits &u)
     {
         return *this;
     }
-    NumberWithUnits& NumberWithUnits::operator-=(const NumberWithUnits &u)
+    NumberWithUnits &NumberWithUnits::operator-=(const NumberWithUnits &u)
     {
         return *this;
     }
-
 
     // prefix  ++a
     NumberWithUnits &NumberWithUnits::operator++()
@@ -93,7 +113,6 @@ namespace ariel
         return NumberWithUnits(amount, name);
     }
 
-
     //Plus/Minus operation
     NumberWithUnits operator+(const NumberWithUnits &u1, const NumberWithUnits &u2)
     {
@@ -107,7 +126,6 @@ namespace ariel
         return NumberWithUnits(1, "");
     }
 
-
     //Mul operation
     NumberWithUnits operator*(const double d, const NumberWithUnits &u1)
     {
@@ -117,7 +135,6 @@ namespace ariel
     {
         return NumberWithUnits(1, "");
     }
-
 
     //Unary operation
     NumberWithUnits operator+(const NumberWithUnits &u1)
@@ -129,7 +146,6 @@ namespace ariel
         return NumberWithUnits(1, "");
     }
 
-
     //Input/Output operation
     std::ostream &operator<<(std::ostream &os, const NumberWithUnits &u)
     {
@@ -139,5 +155,4 @@ namespace ariel
     {
         return is;
     }
-
 };

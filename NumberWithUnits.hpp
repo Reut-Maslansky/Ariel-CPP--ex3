@@ -2,31 +2,19 @@
 
 #include <fstream>
 #include <string>
-#include <vector>
+#include <map>
 
 namespace ariel
 {
     class NumberWithUnits
     {
-        struct NodeU
-        {
-            std::string nameFather;
-            std::string nameChild;
-            int compare;
-
-            NodeU(std::string father, std::string child, double com)
-                : nameFather(father), nameChild(child), compare(com)
-            {
-            }
-        };
-
-        static std::vector<NodeU> v;
         double amount;
         std::string name;
+        static std::map<std::string, std::map<std::string, double>> myUnits;
 
     public:
         NumberWithUnits(double, std::string);
-        static void read_units(std:: ifstream&);
+        static void read_units(std::ifstream &);
 
         //Compare operation
         bool operator==(const NumberWithUnits &u) const;
@@ -36,8 +24,8 @@ namespace ariel
         bool operator<(const NumberWithUnits &u) const;
         bool operator<=(const NumberWithUnits &u) const;
 
-        NumberWithUnits& operator+=(const NumberWithUnits &u);
-        NumberWithUnits& operator-=(const NumberWithUnits &u);
+        NumberWithUnits &operator+=(const NumberWithUnits &u);
+        NumberWithUnits &operator-=(const NumberWithUnits &u);
 
         NumberWithUnits &operator++();         // prefix  ++a
         const NumberWithUnits operator++(int); // postfix a++
