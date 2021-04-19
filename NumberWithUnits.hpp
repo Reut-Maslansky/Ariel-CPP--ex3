@@ -10,9 +10,9 @@ namespace ariel
     {
         double amount;
         std::string name;
-        static std::map<std::string, std::map<std::string, double>> myUnits;
 
     public:
+        static std::map<std::string, std::map<std::string, double>> myUnits;
         NumberWithUnits(double, std::string);
         static void read_units(std::ifstream &);
 

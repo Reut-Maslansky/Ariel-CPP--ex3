@@ -49,101 +49,202 @@ namespace ariel
                 myUnits.at(child).insert({parent, (1 / number)});
             }
         }
+        else
+        {
+            throw string("no such file");
+        }
     }
-    NumberWithUnits::NumberWithUnits(double a, std::string n)
+
+    NumberWithUnits::NumberWithUnits(double a, std::string n) : amount(a), name(n)
     {
-        amount = a;
-        name = n;
+        // if (!myUnits.count(n))
+        // {
+        //     throw invalid_argument("illigal type");
+        // }
+    }
+
+    bool sameType(string a, string b)
+    {
+        return NumberWithUnits::myUnits.at(a).count(b) && NumberWithUnits::myUnits.at(b).count(a);
     }
 
     //Compare operation
     bool NumberWithUnits::operator==(const NumberWithUnits &u) const
     {
-        return true;
+        if (name == u.name)
+        {
+            return amount == u.amount;
+        }
+        if (!sameType(name, u.name))
+        {
+            throw invalid_argument("Not Same Type");
+        }
+        else
+        {
+            return myUnits.at(name).at(u.name) * amount == u.amount;
+        }
     }
     bool NumberWithUnits::operator!=(const NumberWithUnits &u) const
     {
-        return true;
+        return !this->operator==(u);
     }
     bool NumberWithUnits::operator>(const NumberWithUnits &u) const
     {
-        return true;
-    }
-    bool NumberWithUnits::operator>=(const NumberWithUnits &u) const
-    {
-        return true;
+        if (name == u.name)
+        {
+            return amount > u.amount;
+        }
+        if (!sameType(name, u.name))
+        {
+            throw invalid_argument("Not Same Type");
+        }
+        else
+        {
+            return myUnits.at(name).at(u.name) * amount > u.amount;
+        }
     }
     bool NumberWithUnits::operator<(const NumberWithUnits &u) const
     {
-        return true;
+        if (name == u.name)
+        {
+            return amount < u.amount;
+        }
+        if (!sameType(name, u.name))
+        {
+            throw invalid_argument("Not Same Type");
+        }
+        else
+        {
+            return myUnits.at(name).at(u.name) * amount < u.amount;
+        }
+    }
+    bool NumberWithUnits::operator>=(const NumberWithUnits &u) const
+    {
+        return !this->operator<(u);
     }
     bool NumberWithUnits::operator<=(const NumberWithUnits &u) const
     {
-        return true;
+        return !this->operator>(u);
     }
 
     // += / -= operation
     NumberWithUnits &NumberWithUnits::operator+=(const NumberWithUnits &u)
     {
-        return *this;
+        if (name == u.name)
+        {
+            amount += u.amount;
+            return *this;
+        }
+        if (!sameType(name, u.name))
+        {
+            throw invalid_argument("Not Same Type");
+        }
+        else
+        {
+            amount += myUnits.at(u.name).at(name) * u.amount;
+            return *this;
+        }
     }
     NumberWithUnits &NumberWithUnits::operator-=(const NumberWithUnits &u)
     {
-        return *this;
+        if (name == u.name)
+        {
+            amount -= u.amount;
+            return *this;
+        }
+        if (!sameType(name, u.name))
+        {
+            throw invalid_argument("Not Same Type");
+        }
+        else
+        {
+            amount -= myUnits.at(u.name).at(name) * u.amount;
+            return *this;
+        }
     }
 
     // prefix  ++a
     NumberWithUnits &NumberWithUnits::operator++()
     {
+        amount++;
         return *this;
     }
     // postfix a++
     const NumberWithUnits NumberWithUnits::operator++(int)
     {
-        return NumberWithUnits(amount, name);
+        NumberWithUnits before(amount, name);
+        amount++;
+        return before;
     }
     // prefix  --a
     NumberWithUnits &NumberWithUnits::operator--()
     {
+        amount--;
         return *this;
     }
     // postfix a--
     const NumberWithUnits NumberWithUnits::operator--(int)
     {
-        return NumberWithUnits(amount, name);
+        NumberWithUnits before(amount, name);
+        amount--;
+        return before;
     }
 
     //Plus/Minus operation
     NumberWithUnits operator+(const NumberWithUnits &u1, const NumberWithUnits &u2)
     {
-        ////throw expception
-        return NumberWithUnits(1, "");
+        if (u1.name == u2.name)
+        {
+            double tempAmount = u1.amount + u2.amount;
+            return NumberWithUnits{tempAmount, u1.name};
+        }
+        if (!sameType(u1.name, u2.name))
+        {
+            throw invalid_argument("Not Same Type");
+        }
+        else
+        {
+            double tempAmount = u1.amount + NumberWithUnits::myUnits.at(u2.name).at(u1.name) * u2.amount;
+            return NumberWithUnits{tempAmount, u1.name};
+        }
     }
+
     NumberWithUnits operator-(const NumberWithUnits &u1, const NumberWithUnits &u2)
     {
-        ///////fix
-        ////throw expception
-        return NumberWithUnits(1, "");
+        if (u1.name == u2.name)
+        {
+            double tempAmount = u1.amount - u2.amount;
+            return NumberWithUnits{tempAmount, u1.name};
+        }
+        if (!sameType(u1.name, u2.name))
+        {
+            throw invalid_argument("Not Same Type");
+        }
+        else
+        {
+            double tempAmount = u1.amount - NumberWithUnits::myUnits.at(u2.name).at(u1.name) * u2.amount;
+            return NumberWithUnits{tempAmount, u1.name};
+        }
     }
 
     //Mul operation
     NumberWithUnits operator*(const double d, const NumberWithUnits &u1)
     {
-        return NumberWithUnits(1, "");
+        return NumberWithUnits(d * u1.amount, u1.name);
     }
     NumberWithUnits operator*(const NumberWithUnits &u1, const double d)
     {
-        return NumberWithUnits(1, "");
+        return NumberWithUnits(d * u1.amount, u1.name);
     }
 
     //Unary operation
     NumberWithUnits operator+(const NumberWithUnits &u1)
     {
-        return NumberWithUnits(1, "");
+        return NumberWithUnits(u1.amount, u1.name);
     }
     NumberWithUnits operator-(const NumberWithUnits &u1)
     {
-        return NumberWithUnits(1, "");
+        return NumberWithUnits(-u1.amount, u1.name);
     }
 
     //Input/Output operation
@@ -153,6 +254,20 @@ namespace ariel
     }
     std::istream &operator>>(std::istream &is, NumberWithUnits &u)
     {
+        char sign1, sign2;
+        string tempName;
+        double tempAmount;
+        is >> skipws >> tempAmount >> sign1 >> tempName >> sign2;
+        if (sign2 != ']')
+        {
+            tempName =  tempName.substr (0,tempName.length()-1);     
+        }
+        if (!NumberWithUnits::myUnits.count(tempName))
+        {
+            throw invalid_argument("illigal type");
+        }
+        u.amount = tempAmount;
+        u.name = tempName;
         return is;
     }
 };
