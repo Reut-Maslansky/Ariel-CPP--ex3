@@ -55,12 +55,12 @@ namespace ariel
         }
     }
 
-    NumberWithUnits::NumberWithUnits(double a, std::string n) : amount(a), name(n)
+    NumberWithUnits::NumberWithUnits(double a, string n) : amount(a), name(n)
     {
-        // if (!myUnits.count(n))
-        // {
-        //     throw invalid_argument("illigal type");
-        // }
+        if (!myUnits.count(n))
+        {
+            throw invalid_argument("illigal type");
+        }
     }
 
     bool sameType(string a, string b)
@@ -257,10 +257,14 @@ namespace ariel
         char sign1, sign2;
         string tempName;
         double tempAmount;
-        is >> skipws >> tempAmount >> sign1 >> tempName >> sign2;
-        if (sign2 != ']')
+        is >> skipws >> tempAmount >> sign1 >> tempName;
+        if (tempName.at(tempName.length() - 1) != ']')
         {
-            tempName =  tempName.substr (0,tempName.length()-1);     
+            is >> sign2;
+        }
+        else
+        {
+            tempName = tempName.substr(0, tempName.length() - 1);
         }
         if (!NumberWithUnits::myUnits.count(tempName))
         {
