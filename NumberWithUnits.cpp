@@ -17,19 +17,22 @@ namespace ariel
             string u;
             while (getline(file, u))
             {
-                string parent, operatorE, child;
-                double one, number;
+                string parent = " ";
+                string operatorE = " ";
+                string child = " ";
+                double one = 1;
+                double number = 1;
                 istringstream(u) >> skipws >> one >> parent >> operatorE >> number >> child;
-                if (!myUnits.count(parent))
+                if (myUnits.count(parent)==0)
                 {
                     myUnits.insert({parent, map<string, double>{}});
                 }
-                if (!myUnits.count(child))
+                if (myUnits.count(child)==0)
                 {
                     myUnits.insert({child, map<string, double>{}});
                 }
 
-                for (auto elem : myUnits.at(parent))
+                for (auto const &elem : myUnits.at(parent))
                 {
                     double tempAmount = elem.second * number;
                     string tempName = elem.first;
@@ -37,7 +40,7 @@ namespace ariel
                     myUnits.at(child).insert({tempName, 1 / tempAmount});
                 }
 
-                for (auto elem : myUnits.at(child))
+                for (auto const &elem : myUnits.at(child))
                 {
                     double tempAmount = elem.second * number;
                     string tempName = elem.first;
@@ -55,17 +58,17 @@ namespace ariel
         }
     }
 
-    NumberWithUnits::NumberWithUnits(double a, string n) : amount(a), name(n)
+    NumberWithUnits::NumberWithUnits(double a, const string &n) : amount(a), name(n)
     {
-        if (!myUnits.count(n))
+        if (myUnits.count(n)==0)
         {
             throw invalid_argument("illigal type");
         }
     }
 
-    bool sameType(string a, string b)
+    bool sameType(const string &a, const string &b)
     {
-        return NumberWithUnits::myUnits.at(a).count(b) && NumberWithUnits::myUnits.at(b).count(a);
+        return (NumberWithUnits::myUnits.at(a).count(b)!= 0) && (NumberWithUnits::myUnits.at(b).count(a)!=0);
     }
 
     //Compare operation
@@ -79,15 +82,15 @@ namespace ariel
         {
             throw invalid_argument("Not Same Type");
         }
-        else
-        {
-            return myUnits.at(name).at(u.name) * amount == u.amount;
-        }
+
+        return myUnits.at(name).at(u.name) * amount == u.amount;
     }
+
     bool NumberWithUnits::operator!=(const NumberWithUnits &u) const
     {
         return !this->operator==(u);
     }
+
     bool NumberWithUnits::operator>(const NumberWithUnits &u) const
     {
         if (name == u.name)
@@ -98,11 +101,10 @@ namespace ariel
         {
             throw invalid_argument("Not Same Type");
         }
-        else
-        {
-            return myUnits.at(name).at(u.name) * amount > u.amount;
-        }
+
+        return myUnits.at(name).at(u.name) * amount > u.amount;
     }
+
     bool NumberWithUnits::operator<(const NumberWithUnits &u) const
     {
         if (name == u.name)
@@ -113,15 +115,15 @@ namespace ariel
         {
             throw invalid_argument("Not Same Type");
         }
-        else
-        {
-            return myUnits.at(name).at(u.name) * amount < u.amount;
-        }
+
+        return myUnits.at(name).at(u.name) * amount < u.amount;
     }
+
     bool NumberWithUnits::operator>=(const NumberWithUnits &u) const
     {
         return !this->operator<(u);
     }
+
     bool NumberWithUnits::operator<=(const NumberWithUnits &u) const
     {
         return !this->operator>(u);
@@ -139,12 +141,11 @@ namespace ariel
         {
             throw invalid_argument("Not Same Type");
         }
-        else
-        {
-            amount += myUnits.at(u.name).at(name) * u.amount;
-            return *this;
-        }
+
+        amount += myUnits.at(u.name).at(name) * u.amount;
+        return *this;
     }
+
     NumberWithUnits &NumberWithUnits::operator-=(const NumberWithUnits &u)
     {
         if (name == u.name)
@@ -156,11 +157,9 @@ namespace ariel
         {
             throw invalid_argument("Not Same Type");
         }
-        else
-        {
-            amount -= myUnits.at(u.name).at(name) * u.amount;
-            return *this;
-        }
+
+        amount -= myUnits.at(u.name).at(name) * u.amount;
+        return *this;
     }
 
     // prefix  ++a
@@ -169,21 +168,24 @@ namespace ariel
         amount++;
         return *this;
     }
+
     // postfix a++
-    const NumberWithUnits NumberWithUnits::operator++(int)
+    NumberWithUnits NumberWithUnits::operator++(int)
     {
         NumberWithUnits before(amount, name);
         amount++;
         return before;
     }
+
     // prefix  --a
     NumberWithUnits &NumberWithUnits::operator--()
     {
         amount--;
         return *this;
     }
+
     // postfix a--
-    const NumberWithUnits NumberWithUnits::operator--(int)
+    NumberWithUnits NumberWithUnits::operator--(int)
     {
         NumberWithUnits before(amount, name);
         amount--;
@@ -202,11 +204,9 @@ namespace ariel
         {
             throw invalid_argument("Not Same Type");
         }
-        else
-        {
-            double tempAmount = u1.amount + NumberWithUnits::myUnits.at(u2.name).at(u1.name) * u2.amount;
-            return NumberWithUnits{tempAmount, u1.name};
-        }
+
+        double tempAmount = u1.amount + NumberWithUnits::myUnits.at(u2.name).at(u1.name) * u2.amount;
+        return NumberWithUnits{tempAmount, u1.name};
     }
 
     NumberWithUnits operator-(const NumberWithUnits &u1, const NumberWithUnits &u2)
@@ -220,11 +220,9 @@ namespace ariel
         {
             throw invalid_argument("Not Same Type");
         }
-        else
-        {
-            double tempAmount = u1.amount - NumberWithUnits::myUnits.at(u2.name).at(u1.name) * u2.amount;
-            return NumberWithUnits{tempAmount, u1.name};
-        }
+
+        double tempAmount = u1.amount - NumberWithUnits::myUnits.at(u2.name).at(u1.name) * u2.amount;
+        return NumberWithUnits{tempAmount, u1.name};
     }
 
     //Mul operation
@@ -254,9 +252,10 @@ namespace ariel
     }
     std::istream &operator>>(std::istream &is, NumberWithUnits &u)
     {
-        char sign1, sign2;
-        string tempName;
-        double tempAmount;
+        char sign1=' ';
+        char sign2= ' ';
+        string tempName=" ";
+        double tempAmount=0;
         is >> skipws >> tempAmount >> sign1 >> tempName;
         if (tempName.at(tempName.length() - 1) != ']')
         {
@@ -266,7 +265,7 @@ namespace ariel
         {
             tempName = tempName.substr(0, tempName.length() - 1);
         }
-        if (!NumberWithUnits::myUnits.count(tempName))
+        if (NumberWithUnits::myUnits.count(tempName)==0)
         {
             throw invalid_argument("illigal type");
         }
