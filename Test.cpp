@@ -27,21 +27,21 @@ TEST_CASE("read_units")
     CHECK_NOTHROW(NumberWithUnits::read_units(units_file));
 }
 
-// TEST_CASE("build constructors")
-// {
+TEST_CASE("build constructors")
+{
 
-//     CHECK_NOTHROW(NumberWithUnits unit_km(3, "km"));
-//     CHECK_NOTHROW(NumberWithUnits unit_m(-6, "m"));
-//     CHECK_NOTHROW(NumberWithUnits unit_cm(5, "cm"));
-//     CHECK_NOTHROW(NumberWithUnits unit_g(1, "g"));
-//     CHECK_NOTHROW(NumberWithUnits unit_kg(23.7, "kg"));
-//     CHECK_NOTHROW(NumberWithUnits unit_ton(1, "ton"));
-//     CHECK_NOTHROW(NumberWithUnits unit_hour(4.7, "hour"));
-//     CHECK_NOTHROW(NumberWithUnits unit_min(30, "min"));
-//     CHECK_NOTHROW(NumberWithUnits unit_sec(-45, "sec"));
-//     CHECK_NOTHROW(NumberWithUnits unit_USD(-20, "USD"));
-//     CHECK_NOTHROW(NumberWithUnits unit_ILS(34, "ILS"));
-// }
+    CHECK_NOTHROW(NumberWithUnits unit_km(3, "km"));
+    CHECK_NOTHROW(NumberWithUnits unit_m(-6, "m"));
+    CHECK_NOTHROW(NumberWithUnits unit_cm(5, "cm"));
+    CHECK_NOTHROW(NumberWithUnits unit_g(1, "g"));
+    CHECK_NOTHROW(NumberWithUnits unit_kg(23.7, "kg"));
+    CHECK_NOTHROW(NumberWithUnits unit_ton(1, "ton"));
+    CHECK_NOTHROW(NumberWithUnits unit_hour(4.7, "hour"));
+    CHECK_NOTHROW(NumberWithUnits unit_min(30, "min"));
+    CHECK_NOTHROW(NumberWithUnits unit_sec(-45, "sec"));
+    CHECK_NOTHROW(NumberWithUnits unit_USD(-20, "USD"));
+    CHECK_NOTHROW(NumberWithUnits unit_ILS(34, "ILS"));
+}
 
 TEST_CASE("Upper and Lower letters, and illigal types")
 {
@@ -56,29 +56,6 @@ TEST_CASE("Upper and Lower letters, and illigal types")
     CHECK_THROWS(NumberWithUnits(8, "day"));
     CHECK_THROWS(NumberWithUnits(9, "week"));
 }
-
-// NumberWithUnits unit_km1{3, "km"};
-// NumberWithUnits unit_km2{8.4, "km"}; //8400 m
-// NumberWithUnits unit_m1{6, "m"};
-// NumberWithUnits unit_m2{90.4, "m"}; //904 cm
-// NumberWithUnits unit_cm1{5, "cm"};
-// NumberWithUnits unit_cm2{110.8, "cm"}; //1.108 m
-// NumberWithUnits unit_g1{1, "g"};
-// NumberWithUnits unit_g2{4.8, "g"}; //0.0048 kg
-// NumberWithUnits unit_kg1{105, "kg"};
-// NumberWithUnits unit_kg2{23.5, "kg"}; //0.0235 t
-// NumberWithUnits unit_ton1{1, "ton"};
-// NumberWithUnits unit_ton2{23.6, "ton"}; //236000 kg
-// NumberWithUnits unit_hour1{4, "hour"};
-// NumberWithUnits unit_hour2{0.5, "hour"}; //30 min
-// NumberWithUnits unit_min1{30, "min"};
-// NumberWithUnits unit_min2{1.18, "min"}; //70.8 sec
-// NumberWithUnits unit_sec1{45, "sec"};
-// NumberWithUnits unit_sec2{80, "sec"}; //1.2 min
-// NumberWithUnits unit_USD1{20, "USD"};
-// NumberWithUnits unit_USD2{50.8, "USD"}; //169.164 ILS
-// NumberWithUnits unit_ILS1{34, "ILS"};
-// NumberWithUnits unit_ILS2{23.6763, "ILS"}; //7.11 USD
 
 TEST_CASE("Compare operation same types")
 {
